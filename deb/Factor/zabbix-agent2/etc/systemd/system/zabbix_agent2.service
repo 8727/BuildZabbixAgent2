@@ -1,0 +1,20 @@
+[Unit]
+Description=Zabbix agent2 service
+After=network.target
+
+[Service]
+Type=simple
+
+User=root
+
+ExecStart=/sbin/zabbix_agent2 -c /etc/zabbix_agent2/zabbix_agent2.conf
+
+TimeoutSec=20
+
+Restart=on-failure
+RestartSec=5
+
+StandardOutput=null
+
+[Install]
+WantedBy=multi-user.target

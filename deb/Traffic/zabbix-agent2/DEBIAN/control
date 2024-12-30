@@ -1,0 +1,5 @@
+Package: zabbix-agent2
+Version: 7.0.0-v9
+Architecture: all
+Maintainer: alexey.lozovskiy@vc-its.ru
+Description: Zabbix-agent2, Factor, Traffic

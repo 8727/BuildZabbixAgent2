@@ -1,0 +1,34 @@
+#!/bin/bash
+
+if ! [ -d /var/log/zabbix/ ]; then
+  mkdir -p /var/log/zabbix/
+fi
+
+if ! [ -d /var/zabbix/ ]; then
+  mkdir -p /var/zabbix/
+fi
+
+if ! [ -e /usr/bin/jq ]; then
+  cp -p /tmp/zabbix_agent2/jq /usr/bin/
+fi
+
+if ! [ -e /usr/bin/yq ]; then
+  cp -p /tmp/zabbix_agent2/yq /usr/bin/
+fi
+
+if ! [ -e /var/zabbix/agent2.conf ]; then
+  echo "Hostname=xxxx FAXXXXXX" > /var/zabbix/agent2.conf
+  echo "" >> /var/zabbix/agent2.conf
+  echo "#ServerActive=127.0.0.1" >> /var/zabbix/agent2.conf
+fi
+
+if [ -e /usr/bin/jq ]; then
+  FN=$(curl -s "http://127.0.0.1/unitinfo/api/unitinfo" | jq '.unit.factoryNumber' | tr -d \")
+  SN=$(curl -s "http://127.0.0.1/unitinfo/api/unitinfo" | jq '.certificate.serialNumber' | tr -d \")
+  sed -i "s/xxxx/${SN}/g" /var/zabbix/agent2.conf
+  sed -i "s/FAXXXXXX/${FN}/g" /var/zabbix/agent2.conf
+fi
+
+systemctl daemon-reload
+systemctl enable zabbix_agent2
+systemctl start zabbix_agent2
